@@ -75,7 +75,7 @@ import java.util.Locale
 @Dao
 interface DatabaseDao {
     @Transaction
-    @Query("SELECT * FROM song WHERE dateDownload IS NOT NULL")
+    @Query("SELECT song.* FROM song INNER JOIN format ON format.id = song.id WHERE song.isLocal = 0")
     fun downloadedSongsList(): List<Song>
 
     @Transaction

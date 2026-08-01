@@ -286,6 +286,7 @@ import moe.rukamori.archivetune.ui.theme.extractThemeColor
 import moe.rukamori.archivetune.ui.utils.appBarScrollBehavior
 import moe.rukamori.archivetune.ui.utils.backToMain
 import moe.rukamori.archivetune.ui.utils.resetHeightOffset
+import moe.rukamori.archivetune.utils.ArchiveTuneShareLinks
 import moe.rukamori.archivetune.utils.PreferenceStore
 import moe.rukamori.archivetune.utils.SyncUtils
 import moe.rukamori.archivetune.utils.Updater
@@ -2593,9 +2594,17 @@ class MainActivity : ComponentActivity() {
             return
         }
 
-        when (val path = uri.pathSegments.firstOrNull()) {
+        val deepLinkUri =
+            ArchiveTuneShareLinks.toYouTubeMusicUri(uri)
+                ?: if (ArchiveTuneShareLinks.isArchiveTuneShareUri(uri)) {
+                    return
+                } else {
+                    uri
+                }
+
+        when (val path = deepLinkUri.pathSegments.firstOrNull()) {
             "playlist" -> {
-                uri.getQueryParameter("list")?.let { playlistId ->
+                deepLinkUri.getQueryParameter("list")?.let { playlistId ->
                     if (playlistId.startsWith("OLAK5uy_")) {
                         coroutineScope.launch {
                             YouTube
@@ -2613,13 +2622,13 @@ class MainActivity : ComponentActivity() {
             }
 
             "browse" -> {
-                uri.lastPathSegment?.let { browseId ->
+                deepLinkUri.lastPathSegment?.let { browseId ->
                     navController.navigate("album/$browseId")
                 }
             }
 
             "channel", "c" -> {
-                uri.lastPathSegment?.let { artistId ->
+                deepLinkUri.lastPathSegment?.let { artistId ->
                     navController.navigate("artist/$artistId")
                 }
             }
@@ -2627,12 +2636,12 @@ class MainActivity : ComponentActivity() {
             else -> {
                 val videoId =
                     when {
-                        path == "watch" -> uri.getQueryParameter("v")
-                        uri.host == "youtu.be" -> uri.pathSegments.firstOrNull()
+                        path == "watch" -> deepLinkUri.getQueryParameter("v")
+                        deepLinkUri.host == "youtu.be" -> deepLinkUri.pathSegments.firstOrNull()
                         else -> null
                     }
-                val playlistId = uri.getQueryParameter("list")
-                val shouldShufflePlaylist = uri.requestsShuffledPlayback()
+                val playlistId = deepLinkUri.getQueryParameter("list")
+                val shouldShufflePlaylist = deepLinkUri.requestsShuffledPlayback()
 
                 videoId?.let { vid ->
                     coroutineScope.launch {

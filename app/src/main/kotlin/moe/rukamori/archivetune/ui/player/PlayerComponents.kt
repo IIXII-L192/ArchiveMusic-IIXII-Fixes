@@ -299,7 +299,7 @@ fun PlayerTopActions(
                                         type = "text/plain"
                                         putExtra(
                                             Intent.EXTRA_TEXT,
-                                            "https://music.youtube.com/watch?v=${mediaMetadata.id}",
+                                            moe.rukamori.archivetune.utils.ArchiveTuneShareLinks.buildSongShareUrl(mediaMetadata.id),
                                         )
                                     }
                                 context.startActivity(Intent.createChooser(intent, null))
@@ -363,7 +363,7 @@ fun PlayerTopActions(
                                         type = "text/plain"
                                         putExtra(
                                             Intent.EXTRA_TEXT,
-                                            "https://music.youtube.com/watch?v=${mediaMetadata.id}",
+                                            moe.rukamori.archivetune.utils.ArchiveTuneShareLinks.buildSongShareUrl(mediaMetadata.id),
                                         )
                                     }
                                 context.startActivity(Intent.createChooser(intent, null))
@@ -420,7 +420,7 @@ fun PlayerTopActions(
                                 type = "text/plain"
                                 putExtra(
                                     Intent.EXTRA_TEXT,
-                                    "https://music.youtube.com/watch?v=${mediaMetadata.id}",
+                                    moe.rukamori.archivetune.utils.ArchiveTuneShareLinks.buildSongShareUrl(mediaMetadata.id),
                                 )
                             }
                         context.startActivity(Intent.createChooser(intent, null))
@@ -530,7 +530,7 @@ fun PlayerTopActions(
                                     type = "text/plain"
                                     putExtra(
                                         Intent.EXTRA_TEXT,
-                                        "https://music.youtube.com/watch?v=${mediaMetadata.id}",
+                                        moe.rukamori.archivetune.utils.ArchiveTuneShareLinks.buildSongShareUrl(mediaMetadata.id),
                                     )
                                 }
                             context.startActivity(Intent.createChooser(intent, null))
@@ -595,7 +595,7 @@ fun PlayerTopActions(
                                 type = "text/plain"
                                 putExtra(
                                     Intent.EXTRA_TEXT,
-                                    "https://music.youtube.com/watch?v=${mediaMetadata.id}",
+                                    moe.rukamori.archivetune.utils.ArchiveTuneShareLinks.buildSongShareUrl(mediaMetadata.id),
                                 )
                             }
                         context.startActivity(Intent.createChooser(intent, null))
@@ -3197,7 +3197,7 @@ private fun V9PortraitContent(
 
             V9Header(
                 textColor = textBackgroundColor,
-                containerColor = textButtonColor.copy(alpha = 0.16f),
+                containerColor = textBackgroundColor.copy(alpha = 0.08f),
                 iconColor = textBackgroundColor,
                 onCollapseClick = onCollapseClick,
                 onLyricsClick = onLyricsClick,
@@ -3212,7 +3212,7 @@ private fun V9PortraitContent(
                 canvasFallbackUrl = canvasFallbackUrl,
                 isPlaying = isPlaying,
                 size = artworkSize,
-                placeholderColor = textButtonColor.copy(alpha = 0.12f),
+                placeholderColor = textBackgroundColor.copy(alpha = 0.08f),
             )
 
             Spacer(Modifier.height(metadataGap))
@@ -3233,8 +3233,8 @@ private fun V9PortraitContent(
                 position = position,
                 duration = duration,
                 isPlaying = isPlaying,
-                activeColor = textButtonColor,
-                inactiveColor = textButtonColor.copy(alpha = 0.24f),
+                activeColor = textBackgroundColor,
+                inactiveColor = textBackgroundColor.copy(alpha = 0.24f),
                 textColor = textBackgroundColor,
                 onSliderValueChange = onSliderValueChange,
                 onSliderValueChangeFinished = onSliderValueChangeFinished,
@@ -3248,8 +3248,8 @@ private fun V9PortraitContent(
                 isLoading = isLoading,
                 canSkipPrevious = canSkipPrevious,
                 canSkipNext = canSkipNext,
-                containerColor = textButtonColor.copy(alpha = 0.14f),
-                primaryContainerColor = textButtonColor,
+                containerColor = textBackgroundColor.copy(alpha = 0.08f),
+                primaryContainerColor = textBackgroundColor,
                 iconColor = textBackgroundColor,
                 primaryIconColor = iconButtonColor,
                 onPreviousClick = onPreviousClick,
@@ -3313,7 +3313,7 @@ private fun V9LandscapeContent(
                 canvasFallbackUrl = canvasFallbackUrl,
                 isPlaying = isPlaying,
                 size = artworkSize,
-                placeholderColor = textButtonColor.copy(alpha = 0.12f),
+                placeholderColor = textBackgroundColor.copy(alpha = 0.08f),
             )
 
             Column(
@@ -3325,7 +3325,7 @@ private fun V9LandscapeContent(
             ) {
                 V9Header(
                     textColor = textBackgroundColor,
-                    containerColor = textButtonColor.copy(alpha = 0.16f),
+                    containerColor = textBackgroundColor.copy(alpha = 0.08f),
                     iconColor = textBackgroundColor,
                     onCollapseClick = onCollapseClick,
                     onLyricsClick = onLyricsClick,
@@ -3350,8 +3350,8 @@ private fun V9LandscapeContent(
                     position = position,
                     duration = duration,
                     isPlaying = isPlaying,
-                    activeColor = textButtonColor,
-                    inactiveColor = textButtonColor.copy(alpha = 0.24f),
+                    activeColor = textBackgroundColor,
+                    inactiveColor = textBackgroundColor.copy(alpha = 0.24f),
                     textColor = textBackgroundColor,
                     onSliderValueChange = onSliderValueChange,
                     onSliderValueChangeFinished = onSliderValueChangeFinished,
@@ -3365,8 +3365,8 @@ private fun V9LandscapeContent(
                     isLoading = isLoading,
                     canSkipPrevious = canSkipPrevious,
                     canSkipNext = canSkipNext,
-                    containerColor = textButtonColor.copy(alpha = 0.14f),
-                    primaryContainerColor = textButtonColor,
+                    containerColor = textBackgroundColor.copy(alpha = 0.08f),
+                    primaryContainerColor = textBackgroundColor,
                     iconColor = textBackgroundColor,
                     primaryIconColor = iconButtonColor,
                     onPreviousClick = onPreviousClick,
@@ -4262,3 +4262,4 @@ fun PlayerBackground(
         }
     }
 }
+

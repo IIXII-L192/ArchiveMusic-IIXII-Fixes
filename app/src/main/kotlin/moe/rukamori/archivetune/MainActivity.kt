@@ -381,7 +381,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun requestAodMode() {
-        if (!dataStore.get(AodModeEnabledKey, true)) return
+        if (!dataStore.get(AodModeEnabledKey, false)) return
         pendingAodModeRequest = true
         startMusicServiceSafely()
         openPendingAodModeIfReady()

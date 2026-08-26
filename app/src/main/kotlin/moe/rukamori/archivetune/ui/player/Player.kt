@@ -1675,16 +1675,6 @@ fun BottomSheetPlayer(
                                             WindowInsetsSides.Top + WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom,
                                         ),
                                     )
-                                    .pointerInput(Unit) {
-                                        detectDragGestures { change, dragAmount ->
-                                            change.consume()
-                                            if (dragAmount.y > 15) {
-                                                state.collapseSoft()
-                                            } else if (dragAmount.y < -15) {
-                                                openQueue()
-                                            }
-                                        }
-                                    }
                                     .nestedScroll(state.preUpPostDownNestedScrollConnection),
                         )
                     }
@@ -2022,16 +2012,6 @@ fun BottomSheetPlayer(
                                             WindowInsetsSides.Top + WindowInsetsSides.Horizontal,
                                         ),
                                     )
-                                    .pointerInput(Unit) {
-                                        detectDragGestures { change, dragAmount ->
-                                            change.consume()
-                                            if (dragAmount.y > 15) {
-                                                state.collapseSoft()
-                                            } else if (dragAmount.y < -15) {
-                                                openQueue()
-                                            }
-                                        }
-                                    }
                                     .nestedScroll(state.preUpPostDownNestedScrollConnection),
                         )
                     }

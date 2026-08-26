@@ -115,6 +115,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.material3.MaterialShapes
 import kotlin.math.abs
@@ -4788,7 +4789,15 @@ fun V10PlayerContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .padding(bottom = 8.dp)
+                    .pointerInput(Unit) {
+                        detectVerticalDragGestures { change, dragAmount ->
+                            if (dragAmount < -15) {
+                                change.consume()
+                                onQueueClick()
+                            }
+                        }
+                    },
                 horizontalArrangement = Arrangement.SpaceAround // Spread the buttons wider apart
             ) {
                 EditorialChip(
@@ -4933,57 +4942,7 @@ private fun EditorialDieCutArt(
                     scaleY = artScale
                 }
                 .clip(dieCutShape)
-                .background(accent)
-                .pointerInput(canSkipPrevious, canSkipNext) {
-                    detectTapGestures(
-                        onTap = { offset ->
-                            val xFraction = offset.x / size.width.toFloat()
-                            if (xFraction < 0.3f && canSkipPrevious) {
-                                if (enableHapticFeedback) {
-                                    view.performHapticFeedback(
-                                        android.view.HapticFeedbackConstants.KEYBOARD_TAP,
-                                        android.view.HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-                                    )
-                                }
-                                onSkipPrevious()
-                                skipIndicator = "prev"
-                                coroutineScope.launch {
-                                    skipIndicatorAlpha.snapTo(0.8f)
-                                    skipIndicatorAlpha.animateTo(0f, tween(400))
-                                    skipIndicator = null
-                                }
-                            } else if (xFraction > 0.7f && canSkipNext) {
-                                if (enableHapticFeedback) {
-                                    view.performHapticFeedback(
-                                        android.view.HapticFeedbackConstants.KEYBOARD_TAP,
-                                        android.view.HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-                                    )
-                                }
-                                onSkipNext()
-                                skipIndicator = "next"
-                                coroutineScope.launch {
-                                    skipIndicatorAlpha.snapTo(0.8f)
-                                    skipIndicatorAlpha.animateTo(0f, tween(400))
-                                    skipIndicator = null
-                                }
-                            } else {
-                                if (enableHapticFeedback) {
-                                    view.performHapticFeedback(
-                                        android.view.HapticFeedbackConstants.KEYBOARD_TAP,
-                                        android.view.HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-                                    )
-                                }
-                                onTap()
-                                skipIndicator = "play_pause"
-                                coroutineScope.launch {
-                                    skipIndicatorAlpha.snapTo(0.6f)
-                                    skipIndicatorAlpha.animateTo(0f, tween(300))
-                                    skipIndicator = null
-                                }
-                            }
-                        }
-                    )
-                },
+                .background(accent),
             contentAlignment = Alignment.Center
         ) {
             if (artworkUrl != null) {
@@ -5000,36 +4959,6 @@ private fun EditorialDieCutArt(
                     tint = field,
                     modifier = Modifier.size(artSize * 0.3f)
                 )
-            }
-
-            // Visual overlay indicator
-            if (skipIndicator != null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.2f * skipIndicatorAlpha.value)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    val iconRes = when (skipIndicator) {
-                        "prev" -> R.drawable.skip_previous
-                        "next" -> R.drawable.skip_next
-                        else -> if (isPlaying) R.drawable.pause else R.drawable.play
-                    }
-                    Box(
-                        modifier = Modifier
-                            .size(72.dp)
-                            .clip(CircleShape)
-                            .background(field.copy(alpha = 0.8f * skipIndicatorAlpha.value)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(iconRes),
-                            contentDescription = null,
-                            tint = accent,
-                            modifier = Modifier.size(36.dp)
-                        )
-                    }
-                }
             }
         }
     }

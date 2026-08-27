@@ -213,14 +213,14 @@ private fun ToggleSegmentButtonContainer(
     )
     val cornerRadius by animateDpAsState(
         targetValue = if (active) activeCornerRadius else 8.dp,
-        animationSpec = spring(stiffness = Spring.StiffnessLow),
+        animationSpec = tween(durationMillis = 200),
         label = ""
     )
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .clip(RoundedCornerShape(cornerRadius.coerceAtLeast(0.dp)))
+            .clip(RoundedCornerShape(cornerRadius))
             .background(bgColor)
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center

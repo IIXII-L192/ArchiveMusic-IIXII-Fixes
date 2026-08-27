@@ -4805,7 +4805,7 @@ fun V10PlayerContent(
                             }
                         }
                     },
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Like Button
@@ -4816,39 +4816,6 @@ fun V10PlayerContent(
                     field = field,
                     iconResId = if (liked) R.drawable.favorite else R.drawable.favorite_border,
                     contentDescription = "Like"
-                )
-
-                // Shuffle Button
-                V10ToggleButton(
-                    checked = shuffleModeEnabled,
-                    onClick = {
-                        try {
-                            playerConnection.player.shuffleModeEnabled = !shuffleModeEnabled
-                        } catch (_: Exception) {}
-                    },
-                    accent = accent,
-                    field = field,
-                    iconResId = R.drawable.shuffle,
-                    contentDescription = "Shuffle"
-                )
-
-                // Repeat Button
-                val repeatActive = repeatMode != Player.REPEAT_MODE_OFF
-                val repeatIcon = when (repeatMode) {
-                    Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
-                    else -> R.drawable.repeat
-                }
-                V10ToggleButton(
-                    checked = repeatActive,
-                    onClick = {
-                        try {
-                            playerConnection.player.toggleRepeatMode()
-                        } catch (_: Exception) {}
-                    },
-                    accent = accent,
-                    field = field,
-                    iconResId = repeatIcon,
-                    contentDescription = "Repeat"
                 )
 
                 // Add to Playlist Button

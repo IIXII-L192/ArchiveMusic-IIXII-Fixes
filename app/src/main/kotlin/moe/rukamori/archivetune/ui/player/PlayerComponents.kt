@@ -4496,28 +4496,31 @@ fun V10PlayerContent(
             ) {
                 if (sleepTimerEnabled) {
                     val countdownText = makeTimeString(sleepTimerTimeLeft.coerceAtLeast(0L))
-                    Surface(
-                        onClick = onSleepTimerClick,
-                        shape = CircleShape,
-                        color = accent,
-                        contentColor = field,
-                        modifier = Modifier.height(44.dp)
+                    Box(
+                        modifier = Modifier
+                            .height(44.dp)
+                            .clip(CircleShape)
+                            .background(accent)
+                            .clickable(onClick = onSleepTimerClick),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        ) {
-                            Text(
-                                text = countdownText,
-                                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Icon(
-                                painter = painterResource(R.drawable.bedtime),
-                                contentDescription = "Sleep timer",
-                                modifier = Modifier.size(18.dp)
-                            )
+                        CompositionLocalProvider(LocalContentColor provides field) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.padding(horizontal = 16.dp)
+                            ) {
+                                Text(
+                                    text = countdownText,
+                                    style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Icon(
+                                    painter = painterResource(R.drawable.bedtime),
+                                    contentDescription = "Sleep timer",
+                                    modifier = Modifier.size(18.dp)
+                                )
+                            }
                         }
                     }
                 } else {
@@ -4651,16 +4654,16 @@ fun V10PlayerContent(
                     .height(80.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Surface(
-                    onClick = onPlayPauseClick,
+                Box(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight(),
-                    shape = RoundedCornerShape(50),
-                    color = accent,
-                    contentColor = field
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(50))
+                        .background(accent)
+                        .clickable(onClick = onPlayPauseClick),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(contentAlignment = Alignment.Center) {
+                    CompositionLocalProvider(LocalContentColor provides field) {
                         if (isLoading && !isPlaying) {
                             LoadingIndicator(
                                 modifier = Modifier.size(36.dp),
@@ -4789,11 +4792,11 @@ fun V10PlayerContent(
 
             Spacer(modifier = Modifier.height(18.dp))
 
-            // ========== CHIPS ROW ==========
+            // ========== TOGGLE ROW (V9 INDIVIDUAL BUTTONS STYLE) ==========
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp)
+                    .padding(start = 20.dp, end = 20.dp, bottom = 8.dp)
                     .pointerInput(Unit) {
                         detectVerticalDragGestures { change, dragAmount ->
                             if (dragAmount < -15) {
@@ -4802,21 +4805,21 @@ fun V10PlayerContent(
                             }
                         }
                     },
-                horizontalArrangement = Arrangement.SpaceAround // Spread the buttons wider apart
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                EditorialChip(
+                // Like Button
+                V10ToggleButton(
                     checked = liked,
-                    onClick = { onToggleLike() },
+                    onClick = onToggleLike,
                     accent = accent,
-                    field = field
-                ) {
-                    Icon(
-                        painter = painterResource(if (liked) R.drawable.favorite else R.drawable.favorite_border),
-                        contentDescription = "Like",
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                EditorialChip(
+                    field = field,
+                    iconResId = if (liked) R.drawable.favorite else R.drawable.favorite_border,
+                    contentDescription = "Like"
+                )
+
+                // Shuffle Button
+                V10ToggleButton(
                     checked = shuffleModeEnabled,
                     onClick = {
                         try {
@@ -4824,34 +4827,39 @@ fun V10PlayerContent(
                         } catch (_: Exception) {}
                     },
                     accent = accent,
-                    field = field
-                ) {
-                    Icon(painter = painterResource(R.drawable.shuffle), contentDescription = "Shuffle", modifier = Modifier.size(20.dp))
+                    field = field,
+                    iconResId = R.drawable.shuffle,
+                    contentDescription = "Shuffle"
+                )
+
+                // Repeat Button
+                val repeatActive = repeatMode != Player.REPEAT_MODE_OFF
+                val repeatIcon = when (repeatMode) {
+                    Player.REPEAT_MODE_ONE -> R.drawable.repeat_one
+                    else -> R.drawable.repeat
                 }
-                EditorialChip(
-                    checked = repeatMode != Player.REPEAT_MODE_OFF,
+                V10ToggleButton(
+                    checked = repeatActive,
                     onClick = {
                         try {
                             playerConnection.player.toggleRepeatMode()
                         } catch (_: Exception) {}
                     },
                     accent = accent,
-                    field = field
-                ) {
-                    Icon(
-                        painter = painterResource(if (repeatMode == Player.REPEAT_MODE_ONE) R.drawable.repeat_one else R.drawable.repeat),
-                        contentDescription = "Repeat",
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                EditorialChip(
+                    field = field,
+                    iconResId = repeatIcon,
+                    contentDescription = "Repeat"
+                )
+
+                // Add to Playlist Button
+                V10ToggleButton(
                     checked = false,
                     onClick = onAddToPlaylistClick,
                     accent = accent,
-                    field = field
-                ) {
-                    Icon(painter = painterResource(R.drawable.library_add), contentDescription = "Add to playlist", modifier = Modifier.size(20.dp))
-                }
+                    field = field,
+                    iconResId = R.drawable.library_add,
+                    contentDescription = "Add to playlist"
+                )
             }
         }
 
@@ -5031,6 +5039,39 @@ internal fun EditorialChip(
     ) {
         CompositionLocalProvider(LocalContentColor provides contentColor) {
             content()
+        }
+    }
+}
+
+@Composable
+private fun V10ToggleButton(
+    checked: Boolean,
+    onClick: () -> Unit,
+    accent: Color,
+    field: Color,
+    iconResId: Int,
+    contentDescription: String?,
+) {
+    val containerColor by animateColorAsState(
+        targetValue = if (checked) accent else accent.copy(alpha = 0.08f),
+        label = "V10ToggleButtonBg"
+    )
+    val contentColor = if (checked) field else accent
+
+    Box(
+        modifier = Modifier
+            .size(48.dp)
+            .clip(CircleShape)
+            .background(containerColor)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        CompositionLocalProvider(LocalContentColor provides contentColor) {
+            Icon(
+                painter = painterResource(iconResId),
+                contentDescription = contentDescription,
+                modifier = Modifier.size(20.dp),
+            )
         }
     }
 }
